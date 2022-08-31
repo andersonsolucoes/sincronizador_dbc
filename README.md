@@ -23,9 +23,6 @@ mvn package
 prontinho!
 
 ## 🛠️ Construído com
-
-Mencione as ferramentas que você usou para criar seu projeto
-
 VScode 1.70
 Java 8
 Maven 3.2
