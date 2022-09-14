@@ -34,6 +34,7 @@ import java.util.Collection;
 
 import br.com.dbc.sincronizador.models.Conta;
 import br.com.dbc.sincronizador.services.ReceitaService;
+import br.com.dbc.sincronizador.utils.MensagemUtil;
 import br.com.dbc.sincronizador.utils.SincronizacaoUtil;
 import br.com.dbc.sincronizador.validators.Validator;
 
@@ -51,7 +52,7 @@ public class SincronizacaoReceita {
      * Método responsável por realizar a chamada para sincronização dos dados do arquivo informado com o serviço da Receita
      * @param args
      */
-    public void sincronizar(String[] args) {
+    public String sincronizar(String... args) {
         Validator validator = new Validator();
         SincronizacaoUtil util = new SincronizacaoUtil();
         if (validator.validarArgs(args)) {
@@ -59,13 +60,18 @@ public class SincronizacaoReceita {
             try {
                 Collection<Conta> contas = util.popularContas(new FileReader(args[0]));
                 realizarSincronizacao(contas);
-                util.gerarResultado(contas);
+                String arquivoResultado = "resultado.csv";
+                if(args.length > 1) {
+                	arquivoResultado = args[1];
+                }
+                util.gerarResultado(contas, arquivoResultado);
+                return MensagemUtil.SUCESSO;
             } catch (Exception e) {
-                System.out.println("Erro: " + e.getCause());
+                return MensagemUtil.ERRO_PREFIX + e.getCause();
             }
 
         } else {
-            System.out.println("Informe um arquivo com extensão CSV válido para importação!");
+            return MensagemUtil.ERRO_INFORME_ARQUIVO_VALIDO;
         }
     }
 
@@ -79,9 +85,9 @@ public class SincronizacaoReceita {
             ReceitaService service = new ReceitaService();
             try {
                 conta.setResultado(service.atualizarConta(conta.getAgencia(), conta.getConta(), conta.getSaldo(),
-                        conta.getStatus()) ? "Sincronizado" : "Não Sincronizado");
+                        conta.getStatus()) ? MensagemUtil.SINCRONIZADO : MensagemUtil.NAO_SINCRONIZADO);
             } catch (RuntimeException | InterruptedException e) {
-                conta.setResultado("Erro no serviço");
+                conta.setResultado(MensagemUtil.ERRO_SERVICO);
             }
         });
         return contas;

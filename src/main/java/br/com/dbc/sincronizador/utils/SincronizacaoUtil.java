@@ -47,6 +47,8 @@ public class SincronizacaoUtil {
                 }
                 index++;
             }
+            fileReader.close();
+            br.close();
 
         } catch (Exception e) {
             throw new Exception();
@@ -60,8 +62,8 @@ public class SincronizacaoUtil {
      * @param contas
      * @throws Exception
      */
-    public void gerarResultado(Collection<Conta> contas) throws Exception {
-        try (PrintWriter writer = new PrintWriter(new File("resultado.csv"))) {
+    public void gerarResultado(Collection<Conta> contas, String nomeArquivo) throws Exception {
+        try (PrintWriter writer = new PrintWriter(new File(nomeArquivo))) {
 
             StringBuilder linha = new StringBuilder();
 

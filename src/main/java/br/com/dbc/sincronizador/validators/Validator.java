@@ -17,7 +17,7 @@ public class Validator {
      * @param args
      * @return
      */
-    public boolean validarArgs(String[] args) {
+    public boolean validarArgs(String... args) {
         try {
             Path path = Paths.get(args[0]);
             boolean exists = Files.exists(path);
